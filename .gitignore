@@ -1,0 +1,12 @@
+.idea/*
+.idea
+***/target
+**/target
+*/target
+target/*
+target
+*.log
+/project/project/*
+*/spark-warehouse
+.DS_Store
+*****/inputDF/*
