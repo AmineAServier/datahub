@@ -45,7 +45,6 @@ private[sharepoint] case class RemoteFileReader(
     // check if laste_file value is true
     if (options.get_last) {
       sharepointClient(options).uploadLastFile
-      println("Uploaded last file")
     }
     else {
       sharepointClient(options).uploadFile

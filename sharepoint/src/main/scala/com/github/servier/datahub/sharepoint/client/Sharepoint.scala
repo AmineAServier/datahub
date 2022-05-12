@@ -110,8 +110,9 @@ class Sharepoint(options: FileTransferOptions) extends Logging {
     val folder_url = s"${parametersData("url")}_api/web/GetFolderByServerRelativeUrl('${parametersData("source_path")}')/Files" + "?$orderby=TimeLastModified%20desc" + "&$top=1" + "&$select=ServerRelativeUrl"
     val folderRequest: HttpRequest = Http(folder_url).headers(headers)
     val ServerRelativeUrl = getServerRelativeUrl(folderRequest).replace(" ", "%20")
-    println(ServerRelativeUrl)
-    val uri = s"${parametersData("url")}_api/web/GetFileByServerRelativeUrl('${ServerRelativeUrl}')/" + "$value"
+
+    val uri = s"${parametersData("url")}_api/web/GetFileByServerRelativeUrl('${ServerRelativeUrl.replace("\"", "")}')/" + "$value"
+
     val documentRequest: HttpRequest = Http(uri).headers(headers)
     val file: Try[HttpResponse[Unit]] = Try {
       getBodyStream(documentRequest)
