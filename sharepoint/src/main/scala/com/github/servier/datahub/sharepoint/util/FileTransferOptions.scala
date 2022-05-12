@@ -190,6 +190,14 @@ class FileTransferOptions(
     */
   val file_name: Option[String] = parameters.get(FILE_NAME)
 
+  /**
+   * Value set with the option key get_last.
+   * Default value set to `false`.
+   *
+   * @since 0.2.0
+   */
+  val get_last: Boolean = parameters.getOrElse(GET_LAST, "false").toBoolean
+
 }
 
 /**
@@ -325,6 +333,13 @@ object FileTransferOptions {
     * @since 0.1.0
     */
   val FILE_NAME: String = "file_name"
+
+  /**
+    * Constant for the option key __GET_LAST__.
+    *
+    * @since 0.2.0
+    */
+  val GET_LAST: String = "get_last"
 
   /**
     * Set of all the Spark File Transfer options above
