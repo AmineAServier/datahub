@@ -42,7 +42,6 @@ private[sharepoint] case class RemoteFileReader(
       dfr = dfr.schema(customSchema)
     }
 
-    // check if laste_file value is true
     if (options.get_last) {
       sharepointClient(options).uploadLastFile
     }
