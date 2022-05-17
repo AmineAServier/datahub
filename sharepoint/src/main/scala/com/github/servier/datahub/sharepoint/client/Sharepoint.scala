@@ -78,14 +78,20 @@ class Sharepoint(options: FileTransferOptions) extends Logging {
     }
   }
 
-  // Function to get value from json response
   private def getServerRelativeUrl(
       httpReq: scalaj.http.HttpRequest
   ): String = {
     val jsonResponse: HttpResponse[String] = httpReq.asString
-    val serverRelativeUrl: String =
+    val serverRelativeUrl: Try[String] = Try {
       Json.parse(jsonResponse.body)("value")(0)("ServerRelativeUrl").toString()
-    serverRelativeUrl
+    }
+    serverRelativeUrl match {
+      case Success(validServerRelativeUrl) => validServerRelativeUrl
+      case Failure(_) =>
+        throw new RuntimeException(
+          "Invalid URL. Please check your path."
+        )
+    }
   }
   def uploadFile: io.Serializable = {
     val headers = Seq(
@@ -96,9 +102,16 @@ class Sharepoint(options: FileTransferOptions) extends Logging {
     val file: Try[HttpResponse[Unit]] = Try {
       getBodyStream(documentRequest)
     }
+    file.get.code match {
+      case 200 => file.get
+      case _ => throw new RuntimeException(
+        s"Could not downland the file. Sharepoint API responded HTTP code : ${file.get.code}"
+      )
+    }
+    /*
     file.getOrElse(
       s"Could not downland the file. Sharepoint API responded HTTP code : ${file.get.code}"
-    )
+    )*/
 
   }
 
@@ -117,8 +130,12 @@ class Sharepoint(options: FileTransferOptions) extends Logging {
     val file: Try[HttpResponse[Unit]] = Try {
       getBodyStream(documentRequest)
     }
-    file.getOrElse(
-      s"Could not downland the file. Sharepoint API responded HTTP code : ${file.get.code}"
-    )
+
+    file.get.code match {
+      case 200 => file.get
+      case _ => throw new RuntimeException(
+        s"Could not downland the file. Sharepoint API responded HTTP code : ${file.get.code}"
+      )
+    }
   }
 }
