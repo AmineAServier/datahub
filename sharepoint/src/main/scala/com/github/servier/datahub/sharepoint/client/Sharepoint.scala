@@ -78,6 +78,21 @@ class Sharepoint(options: FileTransferOptions) extends Logging {
     }
   }
 
+  private def getServerRelativeUrl(
+      httpReq: scalaj.http.HttpRequest
+  ): String = {
+    val jsonResponse: HttpResponse[String] = httpReq.asString
+    val serverRelativeUrl: Try[String] = Try {
+      Json.parse(jsonResponse.body)("value")(0)("ServerRelativeUrl").toString()
+    }
+    serverRelativeUrl match {
+      case Success(validServerRelativeUrl) => validServerRelativeUrl
+      case Failure(_) =>
+        throw new RuntimeException(
+          "Invalid URL. Please check your path."
+        )
+    }
+  }
   def uploadFile: io.Serializable = {
     val headers = Seq(
       "Authorization" -> s"Bearer ${getBearer.replace("\"", "")}"
@@ -87,9 +102,40 @@ class Sharepoint(options: FileTransferOptions) extends Logging {
     val file: Try[HttpResponse[Unit]] = Try {
       getBodyStream(documentRequest)
     }
+    file.get.code match {
+      case 200 => file.get
+      case _ => throw new RuntimeException(
+        s"Could not downland the file. Sharepoint API responded HTTP code : ${file.get.code}"
+      )
+    }
+    /*
     file.getOrElse(
       s"Could not downland the file. Sharepoint API responded HTTP code : ${file.get.code}"
-    )
+    )*/
 
+  }
+
+  def uploadLastFile: io.Serializable = {
+    val headers = Seq(
+      "Authorization" -> s"Bearer ${getBearer.replace("\"", "")}",
+      "Accept" -> "application/json"
+    )
+    val folder_url = s"${parametersData("url")}_api/web/GetFolderByServerRelativeUrl('${parametersData("source_path")}')/Files" + "?$orderby=TimeLastModified%20desc" + "&$top=1" + "&$select=ServerRelativeUrl"
+    val folderRequest: HttpRequest = Http(folder_url).headers(headers)
+    val ServerRelativeUrl = getServerRelativeUrl(folderRequest).replace(" ", "%20")
+
+    val uri = s"${parametersData("url")}_api/web/GetFileByServerRelativeUrl('${ServerRelativeUrl.replace("\"", "")}')/" + "$value"
+
+    val documentRequest: HttpRequest = Http(uri).headers(headers)
+    val file: Try[HttpResponse[Unit]] = Try {
+      getBodyStream(documentRequest)
+    }
+
+    file.get.code match {
+      case 200 => file.get
+      case _ => throw new RuntimeException(
+        s"Could not downland the file. Sharepoint API responded HTTP code : ${file.get.code}"
+      )
+    }
   }
 }

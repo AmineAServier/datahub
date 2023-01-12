@@ -42,7 +42,13 @@ private[sharepoint] case class RemoteFileReader(
       dfr = dfr.schema(customSchema)
     }
 
-    sharepointClient(options).uploadFile
+    if (options.get_last) {
+      sharepointClient(options).uploadLastFile
+    }
+    else {
+      sharepointClient(options).uploadFile
+    }
+
     val dfs: DfsUtils = new DfsUtils(sqlContext)
     dfs.copyFromLocal(
       s"${options.localTempPath}/${options.file_name.get}",
