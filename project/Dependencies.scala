@@ -20,6 +20,7 @@ object Dependencies {
 
   val sftp: Seq[sbt.Setting[_]] = depends(typesafeConfig, lazyLogging, mockito, scalaTest, Spark.sparkHive, Spark.sparkCore, Spark.sparkSql, Spark.sparkTesting, Jackson.jacksonCore, Jackson.jacksonModuleScala, Jackson.jacksonDatabind,jsch)
   val sharepoint: Seq[sbt.Setting[_]] = depends(typesafeConfig, lazyLogging, mockito, scalaTest, Spark.sparkHive, Spark.sparkCore, Spark.sparkSql, Spark.sparkTesting, Jackson.jacksonCore, Jackson.jacksonModuleScala, Jackson.jacksonDatabind, scalajHTTP, playJson)
+  val graph: Seq[sbt.Setting[_]] = depends(typesafeConfig, lazyLogging, mockito, scalaTest, Spark.sparkHive, Spark.sparkCore, Spark.sparkSql, Spark.sparkTesting, Jackson.jacksonCore, Jackson.jacksonModuleScala, Jackson.jacksonDatabind, scalajHTTP, playJson)
 
   val latest_snapshot: Seq[sbt.Setting[_]] = depends(typesafeConfig, lazyLogging, mockito, scalaTest, Spark.sparkHive, Spark.sparkCore, Spark.sparkSql, Spark.sparkTesting, Spark.sparkAvro, Spark.sparkDelta, Jackson.jacksonCore, Jackson.jacksonModuleScala, Jackson.jacksonDatabind)
   val lookup_table: Seq[sbt.Setting[_]] = depends(typesafeConfig, lazyLogging, mockito, scalaTest, Spark.sparkHive, Spark.sparkCore, Spark.sparkSql, Spark.sparkTesting, Jackson.jacksonCore, Jackson.jacksonModuleScala, Jackson.jacksonDatabind)

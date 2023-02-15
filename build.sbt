@@ -15,4 +15,8 @@ lazy val sftp : Project = project.in(file("sftp"))
   .configs(Configs.all: _*)
   .settings(ProjectSettings.sftp: _*)
 
+lazy val graph : Project = project.in(file("graph"))
+  .configs(Configs.all: _*)
+  .settings(ProjectSettings.graph: _*)
+
 
