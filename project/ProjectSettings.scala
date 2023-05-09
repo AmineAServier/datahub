@@ -20,6 +20,7 @@ object ProjectSettings {
   lazy val spark_processing: Seq[Def.SettingsDefinition] = shared
   lazy val sharepoint: Seq[Def.SettingsDefinition] = shared ++ Publish.settings ++ Dependencies.sharepoint
   lazy val sftp: Seq[Def.SettingsDefinition] = shared ++ Publish.settings ++ Dependencies.sftp
+  lazy val graph: Seq[Def.SettingsDefinition] = shared ++ Publish.settings ++ Dependencies.graph
   lazy val rest: Seq[Def.SettingsDefinition] = shared ++ Publish.settings ++ Dependencies.union
 
 }
